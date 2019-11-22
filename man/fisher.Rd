@@ -2,15 +2,15 @@
 % Please edit documentation in R/fisher.R
 \name{fisher}
 \alias{fisher}
-\title{Fisher's Method}
+\title{Fisher's Method for Aggregating p-values}
 \usage{
 fisher(pvalues)
 }
 \arguments{
-\item{pvalues}{A vector of p-values (i.e. between 0 and 1) to be aggregated with Fisher's method. NAs will be filtered out.}
+\item{pvalues}{A vector of p-values to be aggregated using Fisher's Method. NAs and values outside the interval [0,1] will be removed.}
 }
 \description{
-Aggregate p-values with equal weights. Equivalent to the Lancaster method with all p-values weighted at 2.
+Aggregate a given set of p-values with equal weights. This is equivalent to using Lancaster's Method with all p-values weighted by 2.
 }
 \examples{
 fisher(c(.1, .2, .3))

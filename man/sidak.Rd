@@ -2,15 +2,15 @@
 % Please edit documentation in R/sidak.R
 \name{sidak}
 \alias{sidak}
-\title{Perform the Sidak method.}
+\title{Sidak's Method for Aggregating p-values}
 \usage{
 sidak(pvalues)
 }
 \arguments{
-\item{pvalues}{A vector of p-values to be aggregated. NAs will be filtered.}
+\item{pvalues}{A vector of p-values to be aggregated using Sidak's Method. NAs and values outside the interval [0,1] will be removed.}
 }
 \description{
-The Sidak method uses the minimum p-value but corrects it for the number of p-values that are aggregated.
+Aggregate a set of p-values by adjusting the minimum p-value w.r.t. the number of p-values being adjusted.
 }
 \examples{
 sidak(c(.1, .2, .3))

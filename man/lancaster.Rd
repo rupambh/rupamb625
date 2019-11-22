@@ -2,17 +2,17 @@
 % Please edit documentation in R/lancaster.R
 \name{lancaster}
 \alias{lancaster}
-\title{Lancaster method}
+\title{Lancaster's Method for Aggregating p-values}
 \usage{
 lancaster(pvalues, weights)
 }
 \arguments{
-\item{pvalues}{A vector of p-values (i.e. between 0 and 1). NAs will be filtered out.}
+\item{pvalues}{A vector of p-values to be aggregated using Lancaster's Method. NAs and values outside the interval [0,1] will be removed along with the corresponding weights.}
 
-\item{weights}{A vector of weights, each associated with its respective p-value. Weights must be nonegative. NAs and negative weights will be filtered out with corresponding p-values.}
+\item{weights}{A vector of weights, each corrsponding to its respective p-value, provided in the same order. Note that therefore, the length of the weights vector must be the same as that of the pvalues vector, and that weights must be nonegative. NAs and negative weights will be filtered out along with associated p-values.}
 }
 \description{
-Weighted p-value aggregation.
+Aggregate a set of p-values with user-specified weights.
 }
 \examples{
 lancaster(c(.1, .5), c(2, 4))

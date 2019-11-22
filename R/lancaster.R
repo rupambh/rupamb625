@@ -1,42 +1,58 @@
-#' Lancaster method
+
+#' Lancaster's Method for Aggregating p-values
 #'
-#' Weighted p-value aggregation.
-#' @param pvalues A vector of p-values (i.e. between 0 and 1). NAs will be filtered out.
-#' @param weights A vector of weights, each associated with its respective p-value. Weights must be nonegative. NAs and negative weights will be filtered out with corresponding p-values.
+#' Aggregate a set of p-values with user-specified weights.
+#' @param pvalues A vector of p-values to be aggregated using Lancaster's Method. NAs and values outside the interval [0,1] will be removed along with the corresponding weights.
+#' @param weights A vector of weights, each corrsponding to its respective p-value, provided in the same order. Note that therefore, the length of the weights vector must be the same as that of the pvalues vector, and that weights must be nonegative. NAs and negative weights will be filtered out along with associated p-values.
 #' @examples
 #' lancaster(c(.1, .5), c(2, 4))
 #' @importFrom stats pchisq qgamma
 #' @export
-lancaster <- function(pvalues, weights)
+lancaster=function(pvalues,weights)
 {
-	if(length(weights) != length(pvalues))
-	{
-		stop('Length of weights not equal to length of pvalues')
-	}
-	weights <- weights[!is.na(pvalues)]
-	pvalues <- pvalues[!is.na(pvalues)]
-	pvalues <- pvalues[weights>0 | is.na(weights)]
-	weights <- weights[weights>0 | is.na(weights)]
-	if(length(pvalues) == 0)
-	{
-		return(NA)
-	}
-	if(length(pvalues) == 1)
-	{
-		return(pvalues)
-	}
-	if(any(pvalues < 10e-320))
-	{
-		warning('Extreme p-values around and below 10e-320 will produce a p-value of 0. Replace extreme p-values with 10e-320 to obtain an upper bound for the aggregated p-value.')
-	}
-	t <- sapply(1:length(pvalues), function(i) lts(pvalues[i], weights[i]))
-	t <- sum(t)
-	p <- pchisq(t, sum(weights), lower.tail=FALSE)
-	p
-}
+  # Remove pairs with NA and invalid p-values
 
-lts <- function(pvalue, weight)
-{
-	qgamma(pvalue, shape = weight /2, scale = 2, lower.tail=FALSE)
-}
+  pvalues=pvalues[is.na(pvalues)==FALSE&pvalues>=0&pvalues<=1]
+  weights=weights[is.na(pvalues)==FALSE&pvalues>=0&pvalues<=1]
 
+	# Remove pairs with NA or negative weights
+
+  pvalues=pvalues[is.na(weights)==FALSE&weights>0]
+  weights=weights[is.na(weights)==FALSE&weights>0]
+
+  # Set return value and pointer
+
+  output=NULL
+
+  # Checking for trivial cases
+
+  if(length(pvalues)==0)
+  {
+    # Blank input
+
+    output=NA
+  }
+
+  else if(length(pvalues)==1)
+  {
+    # Single input
+
+    output=pvalues
+  }
+
+  else
+  {
+    # Compute aggregated chi-square statistic and degrees of freedom
+
+    df=sum(weights)
+    teststat=sum(sapply(1:length(pvalues),function(i){qgamma(pvalues[i],shape=weights[i]/2,scale=2,lower.tail=FALSE)}))
+
+    # Compute aggregated p-value
+
+    output=pchisq(teststat,df,lower.tail=FALSE)
+  }
+
+  # Return aggregated p-value
+
+  return(output)
+}

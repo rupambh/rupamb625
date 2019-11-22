@@ -1,33 +1,51 @@
 
-#' Fisher's Method
+#' Fisher's Method for Aggregating p-values
 #'
-#' Aggregate p-values with equal weights. Equivalent to the Lancaster method with all p-values weighted at 2.
-#' @param pvalues A vector of p-values (i.e. between 0 and 1) to be aggregated with Fisher's method. NAs will be filtered out.
+#' Aggregate a given set of p-values with equal weights. This is equivalent to using Lancaster's Method with all p-values weighted by 2.
+#' @param pvalues A vector of p-values to be aggregated using Fisher's Method. NAs and values outside the interval [0,1] will be removed.
 #' @examples
 #' fisher(c(.1, .2, .3))
 #' @importFrom stats pchisq
 #' @export
-fisher <- function(pvalues)
+fisher=function(pvalues)
 {
-	pvalues <- pvalues[!is.na(pvalues)]
-	if(length(pvalues)==0)
-	{
-		return(NA)
-	}
-	if(any(pvalues <0) || any(pvalues >1))
-	{
-		stop('p-values must be between 0 and 1')
-	}
-	if(length(pvalues)==1)
-	{
-		return(pvalues)
-	}
-	if(any(pvalues < 10e-320))
-	{
-		warning('Extremely low p-values at and around 10e-320 will produce an aggregated p-value of 0. Replace extreme p-values with 10e-320 to obtain an upper bound for the aggregated p-value.')
-	}
-	chisq = -2 * sum(log(pvalues))
-	df <- 2* length(pvalues)
-	pchisq(chisq, df, lower.tail = FALSE)
-}
+	# Remove NA and invalid values
 
+  pvalues=pvalues[is.na(pvalues)==FALSE&pvalues>=0&pvalues<=1]
+
+  # Set return value and pointer
+
+  output=NULL
+
+  # Checking for trivial cases
+
+  if(length(pvalues)==0)
+	{
+		# Blank input
+
+    output=NA
+	}
+
+  else if(length(pvalues)==1)
+  {
+    # Single input
+
+    output=pvalues
+  }
+
+  else
+  {
+    # Compute aggregated chi-square statistic and degrees of freedom
+
+    df=2*length(pvalues)
+    teststat=-2*sum(log(pvalues))
+
+    # Compute aggregated p-value
+
+    output=pchisq(teststat,df,lower.tail=FALSE)
+  }
+
+  # Return aggregated p-value
+
+  return(output)
+}
