@@ -4,3 +4,5 @@
 ^\.Rproj\.user$
 ^doc$
 ^Meta$
+^\.travis\.yml$
+^codecov\.yml$

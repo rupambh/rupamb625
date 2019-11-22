@@ -1,3 +1,3 @@
-test_that("multiplication works", {
-  expect_equal(2 * 2, 4)
+test_that("Fisher's method works", {
+  expect_equal(fisher(c(.1, .2, .3)), 0.1152162)
 })

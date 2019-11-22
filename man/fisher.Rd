@@ -2,8 +2,7 @@
 % Please edit documentation in R/fisher.R
 \name{fisher}
 \alias{fisher}
-\title{Fisher's Method
-Aggregate p-values with equal weights. Equivalent to the Lancaster method with all p-values weighted at 2.}
+\title{Fisher's Method}
 \usage{
 fisher(pvalues)
 }
@@ -11,7 +10,6 @@ fisher(pvalues)
 \item{pvalues}{A vector of p-values (i.e. between 0 and 1) to be aggregated with Fisher's method. NAs will be filtered out.}
 }
 \description{
-Fisher's Method
 Aggregate p-values with equal weights. Equivalent to the Lancaster method with all p-values weighted at 2.
 }
 \examples{

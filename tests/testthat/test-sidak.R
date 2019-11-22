@@ -1,3 +1,3 @@
-test_that("multiplication works", {
-  expect_equal(2 * 2, 4)
+test_that("Sidak's method works", {
+  expect_equal(sidak(c(.1, .2, .3)), 0.271)
 })

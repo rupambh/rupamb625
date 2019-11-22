@@ -1,5 +1,6 @@
 
 #' Fisher's Method
+#'
 #' Aggregate p-values with equal weights. Equivalent to the Lancaster method with all p-values weighted at 2.
 #' @param pvalues A vector of p-values (i.e. between 0 and 1) to be aggregated with Fisher's method. NAs will be filtered out.
 #' @examples
