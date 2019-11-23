@@ -14,6 +14,71 @@ knitr::opts_chunk$set(
 )
 ```
 
+# rupamb625
+
+## Overview
+
+This package implements four different methods (namely, Fisher's, Lancaster's, Stouffer's and Sidak's) for aggregating p-values arising from multiple experiments or multiple hypothesis tests within one experiment. For references to the methods and other details, please refer to the README.md file. Here, we demonstrate in details the usage, performance and correctness of our codes.
+
 ```{r setup}
 library(rupamb625)
+```
+
+## Benchmarking
+
+### fisher()
+
+```{r}
+for(i in 1:3)
+{
+  n=10^i
+  input=stats::runif(n)
+  result=bench::mark(rupamb625::fisher(input),aggregation::fisher(input),metap::sumlog(input)$p)
+  print(paste0("Size of input vector: ",i))
+  print(plot(result))
+  print(result)
+}
+```
+
+### lancaster()
+
+```{r}
+for(i in 1:3)
+{
+  n=10^i
+  input1=stats::runif(n)
+  input2=stats::runif(n,0,10)
+  result=bench::mark(rupamb625::lancaster(input1,input2),aggregation::lancaster(input1,input2),metap::invchisq(input1,input2)$p)
+  print(paste0("Size of input vector: ",i))
+  print(plot(result))
+  print(result)
+}
+```
+
+### stouffer()
+
+```{r}
+for(i in 1:3)
+{
+  n=10^i
+  input=stats::runif(n)
+  result=bench::mark(rupamb625::stouffer(input),as.numeric(metap::sumz(input)$p))
+  print(paste0("Size of input vector: ",i))
+  print(plot(result))
+  print(result)
+}
+```
+
+### sidak()
+
+```{r}
+for(i in 1:6)
+{
+  n=10^i
+  input=stats::runif(n)
+  result=bench::mark(rupamb625::sidak(input),aggregation::sidak(input))
+  print(paste0("Size of input vector: ",i))
+  print(plot(result))
+  print(result)
+}
 ```

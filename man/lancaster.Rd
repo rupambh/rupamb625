@@ -11,9 +11,22 @@ lancaster(pvalues, weights)
 
 \item{weights}{A vector of weights, each corrsponding to its respective p-value, provided in the same order. Note that therefore, the length of the weights vector must be the same as that of the pvalues vector, and that weights must be nonegative. NAs and negative weights will be filtered out along with associated p-values.}
 }
+\value{
+A single scalar aggregated p-value (between 0 and 1).
+}
 \description{
 Aggregate a set of p-values with user-specified weights.
 }
 \examples{
 lancaster(c(.1, .5), c(2, 4))
+
+}
+\references{
+Lancaster, H. O. (1961). The combination of probabilities: an application of orthonormal functions. \emph{Australian Journal of Statistics}, 3(1), 20-33.
+}
+\seealso{
+\code{\link{lancaster}}, \code{\link{stouffer}}, \code{\link{sidak}}
+}
+\author{
+Rupam Bhattacharyya, \email{rupamb@umich.edu}
 }

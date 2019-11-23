@@ -2,9 +2,17 @@
 #' Fisher's Method for Aggregating p-values
 #'
 #' Aggregate a given set of p-values with equal weights. This is equivalent to using Lancaster's Method with all p-values weighted by 2.
+#'
+#' @author Rupam Bhattacharyya, \email{rupamb@@umich.edu}
+#'
 #' @param pvalues A vector of p-values to be aggregated using Fisher's Method. NAs and values outside the interval [0,1] will be removed.
+#' @return A single scalar aggregated p-value (between 0 and 1).
 #' @examples
 #' fisher(c(.1, .2, .3))
+#'
+#' @references Fisher, R. A. (1992). Statistical methods for research workers. In \emph{Breakthroughs in statistics} (pp. 66-70). Springer, New York, NY.
+#' @seealso \code{\link{lancaster}}, \code{\link{stouffer}}, \code{\link{sidak}}
+#'
 #' @importFrom stats pchisq
 #' @export
 fisher=function(pvalues)

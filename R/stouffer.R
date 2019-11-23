@@ -2,9 +2,17 @@
 #' Stouffer's Method for Aggregating p-values
 #'
 #' Aggregate a set of one-sided p-values by using standard normal transformations.
+#'
+#' @author Rupam Bhattacharyya, \email{rupamb@@umich.edu}
+#'
 #' @param pvalues A vector of p-values to be aggregated using Stouffer's Method. NAs and values outside the interval [0,1] will be removed.
+#' @return A single scalar aggregated p-value (between 0 and 1).
 #' @examples
 #' stouffer(c(.05, .2, .5))
+#'
+#' @references Stouffer, S. A., Suchman, E. A., DeVinney, L. C., Star, S. A., & Williams Jr, R. M. (1949). The american soldier: Adjustment during army life.(studies in social psychology in world war ii), vol. 1.
+#' @seealso \code{\link{lancaster}}, \code{\link{stouffer}}, \code{\link{sidak}}
+#'
 #' @importFrom stats pnorm qnorm
 #' @export
 stouffer=function(pvalues)

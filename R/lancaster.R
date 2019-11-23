@@ -2,10 +2,18 @@
 #' Lancaster's Method for Aggregating p-values
 #'
 #' Aggregate a set of p-values with user-specified weights.
+#'
+#' @author Rupam Bhattacharyya, \email{rupamb@@umich.edu}
+#'
 #' @param pvalues A vector of p-values to be aggregated using Lancaster's Method. NAs and values outside the interval [0,1] will be removed along with the corresponding weights.
 #' @param weights A vector of weights, each corrsponding to its respective p-value, provided in the same order. Note that therefore, the length of the weights vector must be the same as that of the pvalues vector, and that weights must be nonegative. NAs and negative weights will be filtered out along with associated p-values.
+#' @return A single scalar aggregated p-value (between 0 and 1).
 #' @examples
 #' lancaster(c(.1, .5), c(2, 4))
+#'
+#' @references Lancaster, H. O. (1961). The combination of probabilities: an application of orthonormal functions. \emph{Australian Journal of Statistics}, 3(1), 20-33.
+#' @seealso \code{\link{lancaster}}, \code{\link{stouffer}}, \code{\link{sidak}}
+#'
 #' @importFrom stats pchisq qgamma
 #' @export
 lancaster=function(pvalues,weights)
