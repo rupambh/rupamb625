@@ -1,5 +1,5 @@
 ---
-title: "tutorial"
+title: "rupamb625: A package for aggregating p-values"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{tutorial}
@@ -8,77 +8,185 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+knitr::opts_chunk$set(collapse=TRUE,comment="#>")
 ```
 
-# rupamb625
+# Overview
 
-## Overview
+This package implements four different methods (namely, Fisher's, Lancaster's, Stouffer's and Sidak's) for aggregating p-values arising from multiple experiments or multiple hypothesis tests within one experiment. For a quick overview of the package contents and other necessary details, please refer to the [README](https://github.com/rupambh/rupamb625/blob/master/README.md) file.
 
-This package implements four different methods (namely, Fisher's, Lancaster's, Stouffer's and Sidak's) for aggregating p-values arising from multiple experiments or multiple hypothesis tests within one experiment. For references to the methods and other details, please refer to the README.md file. Here, we demonstrate in details the usage, performance and correctness of our codes.
+This tutorial, as mentioned in the README file, summarizes the installation and usage and demonstrates the correctness and efficiency of the implemented R functions.
+
+# Installation and Loading
 
 ```{r setup}
+#devtools::install_github("rupambh/rupamb625",build_vignettes=TRUE) # Not run while building this tutorial.
 library(rupamb625)
 ```
 
-## Benchmarking
+# Functions
 
-### fisher()
+The package contains four functions, one corresponding to each of the methods. To view the source R codes you can use the following.
+
+```{r, eval=F, echo=T}
+rupamb625::fisher
+rupamb625::lancaster
+rupamb625::stouffer
+rupamb625::sidak
+```
+
+The help pages contain the references which provide the mathematical details. Help pages can be accessed by the following calls.
+
+```{r, eval=F, echo=T}
+?fisher
+?lancaster
+?stouffer
+?sidak
+```
+
+# How to Use
+
+All the three functions other than *lancaster()* require a single numeric vector (containing the p-values to be aggregated) as input, while *lancaster()* requires an additional numeric vector of non-negative weights as the second input to perform a weighted aggregation. A few crucial points to note are:
+
+1. If no weights are provided to *lancaster()*, i.e. only a vector of p-values is given, then it will default to the Fisher method (using a weight of 2 for all the p-values) and yield same output as the *fisher()* function run on the same input.
 
 ```{r}
-for(i in 1:3)
+rupamb625::fisher(c(.1,.2,.3))
+rupamb625::stouffer(c(.1,.2,.3))
+rupamb625::sidak(c(.1,.2,.3))
+
+rupamb625::lancaster(c(.1,.2,.3),c(1,2,3))
+rupamb625::lancaster(c(.1,.2,.3),rep(2,3))
+rupamb625::lancaster(c(.1,.2,.3))
+```
+
+2. NAs or numbers outside the interval $[0,1]$ (and their respective weights for *lancaster()*) will be removed by default in each of the functions. Further, *lancaster()* will remove any NA or non-negative weights and the corresponding p-values.
+
+```{r}
+rupamb625::fisher(c(NA,.1,.2,.3,-0.1,1.1))
+rupamb625::stouffer(c(NA,.1,.2,.3,-0.1,1.1))
+rupamb625::sidak(c(NA,.1,.2,.3,-0.1,1.1))
+
+rupamb625::lancaster(c(NA,.1,.2,.3,.4,.5,-0.1,1.1),c(1,1,2,3,-4,NA,5,6))
+# Equivalent to running rupamb625::lancaster(c(.1,.2,.3),c(1,2,3))
+```
+
+# Correctness of Results
+
+Here, we demonstrate the correctness of our results by comparing them to functions from two other packages, namely, the [aggregation](https://cran.r-project.org/web/packages/aggregation/index.html) and [metap](https://cran.r-project.org/web/packages/metap/index.html) packages available on CRAN.
+
+You can install these packages by running the following on R.
+
+```{r, eval=F, echo=T}
+install.packages("aggregation","metap")
+```
+
+Note that both of these packages have their own implementations of the Fisher and Lancaster methods, while *aggregation* has the Sidak method only bu not the Stouffer method, and for *metap* it is the other way round.
+
+First of all, see that *aggregation::fisher()* is not set-up to filter out negatives or >1 values. The same goes for *metap::sumlog()*, and it is also unable to handle NA inputs. Similar notes follow for all the other methods as well.
+
+```{r}
+all.equal(rupamb625::fisher(c(NA,-.1,.1,.2,.3,1.1)),aggregation::fisher(c(NA,.1,.2,.3)))
+all.equal(rupamb625::fisher(c(NA,-.1,.1,.2,.3,1.1)),metap::sumlog(c(.1,.2,.3))$p)
+
+all.equal(rupamb625::lancaster(c(NA,-.1,.1,.2,.3,1.1),1:6),aggregation::lancaster(c(.1,.2,.3),3:5))
+all.equal(rupamb625::lancaster(c(NA,-.1,.1,.2,.3,1.1),1:6),metap::invchisq(c(.1,.2,.3),3:5)$p)
+
+all.equal(rupamb625::stouffer(c(NA,-.1,.1,.2,.3,1.1)),as.numeric(metap::sumz(c(.1,.2,.3))$p))
+
+all.equal(rupamb625::sidak(c(NA,-.1,.1,.2,.3,1.1)),aggregation::sidak(c(NA,.1,.2,.3)))
+```
+
+Further, *aggregation::lancaster()* claims to filter out NAs and negative weights, but only filters out negative values, as can be seen below.
+
+```{r}
+aggregation::lancaster(1:4/10,c(1:3,NA))
+aggregation::lancaster(1:4/10,c(1:3,-4))
+aggregation::lancaster(1:3/10,1:3)
+```
+
+The reason behind this is the following two lines of code that can be accessed by calling *aggregation::lancaster*. An *&* operator should be used in place of the pipe (*|*).
+
+```{r, eval=F, echo=T}
+pvalues <- pvalues[weights > 0 | is.na(weights)]
+weights <- weights[weights > 0 | is.na(weights)]
+```
+
+Our version of lancaster already solves this issue.
+
+# Benchmarking
+
+For each of the functions, we compare their performances with their counterparts from the other packages. We apply the functions on a sequence of inputs with increasing size, ranging from 10 to 10000. If you want to run your versions of these comparisons, install the packages required for comparisons and visualizations by running the code provided below.
+
+```{r, eval=F, echo=T}
+install.packages("dplyr","ggplot2","ggbeeswarm","lattice","tidyr","bench")
+```
+
+## Fisher
+
+```{r}
+for(i in 1:4)
 {
   n=10^i
   input=stats::runif(n)
   result=bench::mark(rupamb625::fisher(input),aggregation::fisher(input),metap::sumlog(input)$p)
-  print(paste0("Size of input vector: ",i))
+  print(paste0("Size of input vector: ",10^i))
   print(plot(result))
   print(result)
 }
 ```
 
-### lancaster()
+Clearly, for this method, our method performs the fastest among the three. The differences in timings, especially that with *aggregation::fisher()*, become very pronounced as we move along to larger and larger inputs.
+
+## Lancaster
 
 ```{r}
-for(i in 1:3)
+for(i in 1:4)
 {
   n=10^i
   input1=stats::runif(n)
   input2=stats::runif(n,0,10)
   result=bench::mark(rupamb625::lancaster(input1,input2),aggregation::lancaster(input1,input2),metap::invchisq(input1,input2)$p)
-  print(paste0("Size of input vector: ",i))
+  print(paste0("Size of input vector: ",10^i))
   print(plot(result))
   print(result)
 }
 ```
 
-### stouffer()
+Our implementation of this method performs better than its counterpart from *aggregation* in all input sizes. However, the *metap* implementation performs better than ours in larger input sizes.
+
+## Stouffer
 
 ```{r}
-for(i in 1:3)
+for(i in 1:4)
 {
   n=10^i
   input=stats::runif(n)
   result=bench::mark(rupamb625::stouffer(input),as.numeric(metap::sumz(input)$p))
-  print(paste0("Size of input vector: ",i))
+  print(paste0("Size of input vector: ",10^i))
   print(plot(result))
   print(result)
 }
 ```
 
-### sidak()
+Our implementation performs way better than the *metap* implementation in terms of timing. Though the improvements become a little less pronounced as we move along up to 10000 input size, the achieved level of performance is pretty high.
+
+## Sidak
 
 ```{r}
-for(i in 1:6)
+for(i in 1:4)
 {
   n=10^i
   input=stats::runif(n)
   result=bench::mark(rupamb625::sidak(input),aggregation::sidak(input))
-  print(paste0("Size of input vector: ",i))
+  print(paste0("Size of input vector: ",10^i))
   print(plot(result))
   print(result)
 }
 ```
+
+Here, we only make a very tiny bit of improvement in terms of timing.
+
+# Final Notes
+
+Thanks for taking your time to look at our package. In case you want to let us know about any comments, queries or suggestions, contact us [here](mailto:rupamb@umich.edu)!

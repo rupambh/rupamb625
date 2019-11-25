@@ -16,8 +16,15 @@
 #'
 #' @importFrom stats pchisq qgamma
 #' @export
-lancaster=function(pvalues,weights)
+lancaster=function(pvalues,weights=NULL)
 {
+  # Default to Fisher's method if no weights provided
+
+  if(is.null(weights)==TRUE)
+  {
+    weights=rep(2,length(pvalues))
+  }
+
   # Remove pairs with NA and invalid p-values
 
   weights=weights[is.na(pvalues)==FALSE&pvalues>=0&pvalues<=1]

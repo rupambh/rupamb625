@@ -1,4 +1,5 @@
 # rupamb625
+
 [![Build Status](https://img.shields.io/travis/rupambh/rupamb625/master.svg)](https://travis-ci.org/rupambh/rupamb625) [![codecov](https://codecov.io/github/rupambh/rupamb625/branch/master/graphs/badge.svg)](https://codecov.io/github/rupambh/rupamb625) 
 
 Hi! Welcome to our package for combining p-values from multiple experiments or multiple hypotheses testing problems. This package offers implementations of four different p-value aggregation methods in R, namely, the Fisher, Lancaster, Stouffer and Sidak methods. For more details on the methods and references, you can visit the individual help pages for the functions by calling something like the following on your R console.

@@ -4,7 +4,7 @@
 \alias{lancaster}
 \title{Lancaster's Method for Aggregating p-values}
 \usage{
-lancaster(pvalues, weights)
+lancaster(pvalues, weights = NULL)
 }
 \arguments{
 \item{pvalues}{A vector of p-values to be aggregated using Lancaster's Method. NAs and values outside the interval [0,1] will be removed along with the corresponding weights.}
