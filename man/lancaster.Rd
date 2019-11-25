@@ -25,7 +25,7 @@ lancaster(c(.1, .5), c(2, 4))
 Lancaster, H. O. (1961). The combination of probabilities: an application of orthonormal functions. \emph{Australian Journal of Statistics}, 3(1), 20-33.
 }
 \seealso{
-\code{\link{lancaster}}, \code{\link{stouffer}}, \code{\link{sidak}}
+\code{\link{fisher}}, \code{\link{stouffer}}, \code{\link{sidak}}
 }
 \author{
 Rupam Bhattacharyya, \email{rupamb@umich.edu}

@@ -12,7 +12,7 @@
 #' lancaster(c(.1, .5), c(2, 4))
 #'
 #' @references Lancaster, H. O. (1961). The combination of probabilities: an application of orthonormal functions. \emph{Australian Journal of Statistics}, 3(1), 20-33.
-#' @seealso \code{\link{lancaster}}, \code{\link{stouffer}}, \code{\link{sidak}}
+#' @seealso \code{\link{fisher}}, \code{\link{stouffer}}, \code{\link{sidak}}
 #'
 #' @importFrom stats pchisq qgamma
 #' @export
@@ -20,8 +20,8 @@ lancaster=function(pvalues,weights)
 {
   # Remove pairs with NA and invalid p-values
 
-  pvalues=pvalues[is.na(pvalues)==FALSE&pvalues>=0&pvalues<=1]
   weights=weights[is.na(pvalues)==FALSE&pvalues>=0&pvalues<=1]
+  pvalues=pvalues[is.na(pvalues)==FALSE&pvalues>=0&pvalues<=1]
 
 	# Remove pairs with NA or negative weights
 

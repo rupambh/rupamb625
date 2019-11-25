@@ -11,7 +11,7 @@
 #' sidak(c(.1, .2, .3))
 #'
 #' @references Šidák, Z. (1967). Rectangular confidence regions for the means of multivariate normal distributions. \emph{Journal of the American Statistical Association}, 62(318), 626-633.
-#' @seealso \code{\link{lancaster}}, \code{\link{stouffer}}, \code{\link{sidak}}
+#' @seealso \code{\link{lancaster}}, \code{\link{stouffer}}, \code{\link{fisher}}
 #'
 #' @export
 sidak=function(pvalues)

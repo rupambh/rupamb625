@@ -23,7 +23,7 @@ stouffer(c(.05, .2, .5))
 Stouffer, S. A., Suchman, E. A., DeVinney, L. C., Star, S. A., & Williams Jr, R. M. (1949). The american soldier: Adjustment during army life.(studies in social psychology in world war ii), vol. 1.
 }
 \seealso{
-\code{\link{lancaster}}, \code{\link{stouffer}}, \code{\link{sidak}}
+\code{\link{lancaster}}, \code{\link{fisher}}, \code{\link{sidak}}
 }
 \author{
 Rupam Bhattacharyya, \email{rupamb@umich.edu}
